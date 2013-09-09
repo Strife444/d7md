@@ -10,6 +10,8 @@ function hello_block_info() {
 
   $blocks['hello_world'] = array(
     'info' => t('Hello World Block'),
+    //t is a function call in drupal for text seen in the user interace.
+    //Can also provide alternative language possibilities.
   );
 
   $blocks['hello_user'] = array(
@@ -20,4 +22,41 @@ function hello_block_info() {
 
 }
 
-?>
+function hello_block_view($delta = '')
+{
+  $block = array();
+  
+  switch($delta){
+    case 'hello_world':
+      $block['subject'] = t('Hello World!!!');
+      $block['content'] = t('This is the Hello World block.');
+      
+      break;
+      
+    case 'hello_user':
+      $block['subject'] = t('Hello World');
+      //to get global variable for current user.
+      
+      //to get date
+      $hour = date('G');
+      if ($hour < 12){
+        $greeting = 'Good morning, @name!';
+      }
+      elseif ($hour < 18) {
+        $greeting = 'Good afternoon, @name.';
+      }
+      else {
+        $greeting = 'Good evening, @name.';
+      }
+      global $user;
+      $block['content'] = t($greeting, array('@name' => $user->name));
+      //could also be done without global $user; 
+      //line ending would instead be '@name' => $GLOBALS['user']->name));
+      //THIS (GLOBALS[]) preferable/more common, but both mean the same. 
+      
+      break;
+  }
+  
+  
+  return $block;
+}
