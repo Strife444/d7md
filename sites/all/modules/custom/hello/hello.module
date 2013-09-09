@@ -5,4 +5,19 @@
  * and open the template in the editor.
  */
 
+function hello_block_info() {
+  $blocks = array();
+
+  $blocks['hello_world'] = array(
+    'info' => t('Hello World Block'),
+  );
+
+  $blocks['hello_user'] = array(
+    'info' => t('Hello User Block'),
+  );
+
+  return $blocks;
+
+}
+
 ?>
