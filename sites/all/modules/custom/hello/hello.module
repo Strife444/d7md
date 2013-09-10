@@ -8,7 +8,7 @@
 function hello_block_info() {
   $blocks = array();
 
-  $blocks['hello_world'] = array(
+  $blocks['hello_world'] = array(  //Block initialization
     'info' => t('Hello World Block'),
     //t is a function call in drupal for text seen in the user interace.
     //Can also provide alternative language possibilities.
@@ -18,6 +18,12 @@ function hello_block_info() {
     'info' => t('Hello User Block'),
   );
 
+  
+  $blocks['user_info'] = array(
+    'info' => t('User Info Block'),
+  );
+  
+  
   return $blocks;
 
 }
@@ -34,9 +40,8 @@ function hello_block_view($delta = '')
       break;
       
     case 'hello_user':
-      $block['subject'] = t('Hello World');
-      //to get global variable for current user.
-      
+      $block['subject'] = t('Hello World'); //block title
+            
       //to get date
       $hour = date('G');
       if ($hour < 12){
@@ -48,14 +53,59 @@ function hello_block_view($delta = '')
       else {
         $greeting = 'Good evening, @name.';
       }
+
+      //to get global variable for current user.
       global $user;
       $block['content'] = t($greeting, array('@name' => $user->name));
-      //could also be done without global $user; 
+      //block content. 
+      //could also be done without "global $user; "
       //line ending would instead be '@name' => $GLOBALS['user']->name));
       //THIS (GLOBALS[]) preferable/more common, but both mean the same. 
       
       break;
+      
+    case 'user_info':
+      //global variable [q] is the drupal path for current page.
+      //If you need variables info, can use var_dump() or print_r()
+      
+      //dpm($_GET); //devel module to print a drupal message
+      
+      //if (preg_match('/user\/\d+/')) would work to have it work on the pattern
+      //dpm(arg(0));  //prints out the message with arguments
+      //dpm(arg(1));  
+      
+      if (arg(0) == 'user' && is_numeric(arg(1)))
+        {
+        $account = user_load(arg(1));
+        //using arg1 to load the user's id number
+        //
+        //This IF checks to make sure devel is enabled.
+        //if (module_exists('devel')) {
+        //
+        //dpm($account); 
+        //}
+        //dpm is part of DEVEL module and will cause fatal error if
+        //put into live site since devel may not be on there.
+        
+        if (!empty($account))
+        {
+        $block['subject'] = t('User Info');
+        $output = '';
+        $output .= '<div><label>' . t('Name') . '</label>' . $account->name . '</div>';
+        $output .= '<div><label>' . t('Email') . '</label>' . $account->mail . '</div>';
+        $output .= '<div><label>' . t('Created') . '</label>' . format_date($account->created) . '</div>';
+        
+        $access = ($account->access == 0) ? t('Never') : format_date($account->access);
+        $output .= '<div><label>' . t('Last Accessed') . '</label>' . $access . '</div>';
+        
+        // format_date is a drupal function, allows for drupal to use the 
+        // user's date and time configuration to print to the user.
+        $block['content'] = $output;
+        }
+      }
+      break;
   }
+  
   
   
   return $block;
