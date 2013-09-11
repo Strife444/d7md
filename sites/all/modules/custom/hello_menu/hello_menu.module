@@ -1,0 +1,40 @@
+<?php
+
+function hello_menu_menu() {
+  //basic structure is:
+  /*$items['example'] = array(
+    'title' => 'Example Page',
+    'page callback' => 'example_page',
+    'access arguments' => array('access content'),
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+  $items['example/feed'] = array(
+    'title' => 'Example RSS feed',
+    'page callback' => 'example_feed',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+*/
+  
+  $items = array();
+  
+  $items['hello'] = array(  //'hello' is the drupal URL in this case.
+    
+    'title' => 'Hello World',  //Titles automatically go through t function so
+                               //t function not necessary.
+    'page callback' => 'hello_menu_simple_hello',
+    'access arguments' => array('access content'),
+    'menu_name' => 'main-menu',
+    'weight' => 1,
+  );
+  
+  
+  
+  return $items;
+}
+
+
+function hello_menu_simple_hello(){
+  return t('Hello World!');
+}
+
